@@ -128,6 +128,40 @@ body::after {
     100% { transform: translateY(0) translateX(0) rotate(0deg); }
 }
 
+/* Gotas Animadas Individuales */
+.water-drop {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--glass-blue);
+    border-radius: var(--radius-drop);
+    animation: dropFall 3s infinite ease-in-out;
+    z-index: -1;
+}
+
+.water-drop:nth-child(1) { left: 10%; animation-delay: 0s; }
+.water-drop:nth-child(2) { left: 30%; animation-delay: 0.5s; }
+.water-drop:nth-child(3) { left: 50%; animation-delay: 1s; }
+.water-drop:nth-child(4) { left: 70%; animation-delay: 1.5s; }
+.water-drop:nth-child(5) { left: 90%; animation-delay: 2s; }
+
+@keyframes dropFall {
+    0% { 
+        top: -10px; 
+        opacity: 0; 
+        transform: scale(0.5); 
+    }
+    50% { 
+        opacity: 0.6; 
+        transform: scale(1); 
+    }
+    100% { 
+        top: 100vh; 
+        opacity: 0; 
+        transform: scale(0.8); 
+    }
+}
+
 /* ==============================================
    CONTENEDOR PRINCIPAL COMPACTO ACUÁTICO
    ============================================== */
@@ -172,6 +206,46 @@ body::after {
     background: rgba(255, 255, 255, 0.9);
 }
 
+/* Efecto de Ondas en el Contenedor */
+.glass-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, var(--glass-blue) 0%, transparent 70%);
+    border-radius: var(--radius-drop);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all var(--duration-ripple) var(--ease-ripple);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.glass-container.ripple::after {
+    width: 100px;
+    height: 100px;
+    opacity: 0.3;
+    animation: rippleEffect var(--duration-ripple) var(--ease-ripple);
+}
+
+@keyframes rippleEffect {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+    }
+}
+
 /* ==============================================
    HEADER Y TÍTULO COMPACTO ACUÁTICO
    ============================================== */
@@ -182,7 +256,7 @@ header {
 }
 
 .app-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: var(--space-sm);
@@ -192,10 +266,25 @@ header {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    position: relative;
+}
+
+.app-title::after {
+    content: '💧';
+    position: absolute;
+    right: -20px;
+    top: 0;
+    font-size: 16px;
+    animation: dropBounce 2s infinite ease-in-out;
+}
+
+@keyframes dropBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
 }
 
 .app-subtitle {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 1.3;
     color: var(--text-tertiary);
@@ -221,7 +310,7 @@ header {
 .password-field {
     flex: 1;
     font-family: 'SF Mono', ui-monospace, 'Monaco', 'Consolas', monospace;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.3;
     padding: var(--space-md);
     background: var(--glass-white);
@@ -236,6 +325,7 @@ header {
     font-variant-numeric: tabular-nums;
     box-shadow: var(--shadow-drop);
     backdrop-filter: blur(10px);
+    position: relative;
 }
 
 .password-field:focus {
@@ -249,7 +339,32 @@ header {
 .password-field::placeholder {
     color: var(--text-tertiary);
     font-style: normal;
-    font-size: 11px;
+    font-size: 12px;
+}
+
+/* Efecto de Gota en el Campo de Contraseña */
+.password-field::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--glass-blue), transparent, var(--glass-blue));
+    border-radius: var(--radius-md);
+    opacity: 0;
+    transition: opacity var(--duration-drop) var(--ease-water);
+    z-index: -1;
+}
+
+.password-field:focus::before {
+    opacity: 0.3;
+    animation: borderFlow 2s infinite ease-in-out;
+}
+
+@keyframes borderFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .copy-button {
@@ -264,16 +379,29 @@ header {
     gap: var(--space-xs);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
     font-weight: 600;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.3;
     transition: all var(--duration-drop) var(--ease-water);
     white-space: nowrap;
-    min-width: 50px;
+    min-width: 60px;
     justify-content: center;
     letter-spacing: 0.01em;
     box-shadow: var(--shadow-drop);
     position: relative;
     overflow: hidden;
+}
+
+.copy-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-drop);
+    transform: translate(-50%, -50%);
+    transition: all var(--duration-splash) var(--ease-splash);
 }
 
 .copy-button:hover {
@@ -282,21 +410,44 @@ header {
     box-shadow: var(--shadow-splash);
 }
 
+.copy-button:hover::before {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-md);
+}
+
 .copy-button:active {
     transform: translateY(0) scale(0.95);
     transition-duration: 0.1s;
     background: var(--aqua-blue-dark);
 }
 
+.copy-button:active::before {
+    animation: splashEffect var(--duration-drop) var(--ease-ripple);
+}
+
+@keyframes splashEffect {
+    0% { 
+        width: 0; 
+        height: 0; 
+        opacity: 0.8; 
+    }
+    100% { 
+        width: 150%; 
+        height: 150%; 
+        opacity: 0; 
+    }
+}
+
 .copy-feedback {
     position: absolute;
-    top: -32px;
+    top: -36px;
     right: 0;
     background: var(--success-green);
     color: var(--water-white);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-lg);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     opacity: 0;
     transform: translateY(6px) scale(0.8);
@@ -311,37 +462,52 @@ header {
 .copy-feedback.show {
     opacity: 1;
     transform: translateY(0) scale(1);
+    animation: dropSuccess var(--duration-splash) var(--ease-splash);
+}
+
+@keyframes dropSuccess {
+    0% { 
+        transform: translateY(10px) scale(0.5) rotate(-5deg); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: translateY(-2px) scale(1.1) rotate(2deg); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translateY(0) scale(1) rotate(0deg); 
+        opacity: 1; 
+    }
 }
 
 /* ==============================================
-   CONFIGURACIONES COMPACTAS
+   SECCIÓN DE CONFIGURACIONES iOS
    ============================================== */
 
 .settings-section {
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--spacing-xl);
 }
 
 .setting-group {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--spacing-lg);
 }
 
 .group-title {
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 600;
     line-height: 1.2;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--spacing-md);
     color: var(--text-primary);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
 }
 
-/* Configuración de Longitud Compacta */
+/* Configuración de Longitud */
 .length-setting {
-    background: var(--glass-white);
-    padding: var(--space-lg);
+    background: var(--background-primary);
+    padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--glass-clear);
-    box-shadow: var(--shadow-drop);
-    backdrop-filter: blur(15px);
+    border: 0.5px solid var(--separator);
+    box-shadow: var(--shadow-sm);
 }
 
 .setting-label {
@@ -349,80 +515,95 @@ header {
     justify-content: space-between;
     align-items: center;
     font-weight: 500;
-    font-size: 13px;
-    line-height: 1.3;
-    margin-bottom: var(--space-md);
+    font-size: 17px;
+    line-height: 1.29;
+    margin-bottom: var(--spacing-md);
     cursor: pointer;
     color: var(--text-primary);
-    letter-spacing: 0.01em;
+    letter-spacing: -0.01em;
 }
 
 .length-value {
-    background: var(--aqua-blue);
-    color: var(--water-white);
-    padding: var(--space-xs) var(--space-md);
+    background: var(--ios-blue);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-md);
     border-radius: var(--radius-lg);
     font-weight: 600;
-    font-size: 13px;
-    min-width: 32px;
+    font-size: 17px;
+    min-width: 44px;
     text-align: center;
     font-variant-numeric: tabular-nums;
-    box-shadow: var(--shadow-drop);
+    box-shadow: var(--shadow-sm);
 }
 
 .length-slider {
     width: 100%;
-    height: 3px;
+    height: 4px;
     border-radius: 2px;
-    background: var(--glass-clear);
+    background: var(--ios-gray-5);
     outline: none;
     -webkit-appearance: none;
     appearance: none;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--spacing-md);
     cursor: pointer;
     position: relative;
 }
 
 .length-slider::-webkit-slider-track {
-    height: 3px;
+    height: 4px;
     border-radius: 2px;
-    background: var(--glass-clear);
+    background: var(--ios-gray-5);
 }
 
 .length-slider::-webkit-slider-thumb {
     appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: var(--radius-drop);
-    background: var(--water-white);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--background-primary);
     cursor: pointer;
     box-shadow: 
-        0 0 0 1px var(--aqua-blue),
-        var(--shadow-drop);
-    transition: all var(--duration-drop) var(--ease-water);
+        0 0 0 0.5px var(--border-color-strong),
+        var(--shadow-md);
+    transition: all var(--duration-fast) var(--ease-ios);
+    position: relative;
 }
 
 .length-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
     box-shadow: 
-        0 0 0 2px var(--aqua-blue),
-        var(--shadow-splash);
+        0 0 0 0.5px var(--ios-blue),
+        var(--shadow-blue);
+}
+
+.length-slider::-webkit-slider-thumb:active {
+    transform: scale(1.2);
+}
+
+.length-slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    border: 0.5px solid var(--separator);
+    box-shadow: var(--shadow-md);
 }
 
 .slider-range {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 13px;
     color: var(--text-tertiary);
     font-weight: 400;
     font-variant-numeric: tabular-nums;
 }
 
-/* Checkboxes Compactos */
+/* Grid de Checkboxes iOS */
 .checkbox-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-sm);
+    gap: var(--spacing-sm);
 }
 
 .checkbox-item {
@@ -438,162 +619,169 @@ header {
 .checkbox-label {
     display: flex;
     align-items: center;
-    gap: var(--space-md);
+    gap: var(--spacing-md);
     cursor: pointer;
-    padding: var(--space-md);
-    background: var(--glass-white);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--background-primary);
     border-radius: var(--radius-md);
-    border: 1px solid var(--glass-clear);
-    transition: all var(--duration-drop) var(--ease-water);
+    border: 0.5px solid var(--separator);
+    transition: all var(--duration-fast) var(--ease-ios);
     user-select: none;
-    min-height: 36px;
-    box-shadow: var(--shadow-drop);
-    backdrop-filter: blur(10px);
+    min-height: 44px; /* Altura mínima táctil iOS */
+    box-shadow: var(--shadow-xs);
 }
 
 .checkbox-label:hover {
-    background: var(--water-white);
+    background: var(--background-secondary);
     transform: translateY(-1px);
-    box-shadow: var(--shadow-splash);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border-color-strong);
+}
+
+.checkbox-label:active {
+    transform: scale(0.98);
+    transition-duration: 0.1s;
 }
 
 .checkbox-custom {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--aqua-blue-light);
-    border-radius: var(--radius-sm);
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--ios-gray-3);
+    border-radius: 6px;
     position: relative;
-    transition: all var(--duration-drop) var(--ease-water);
+    transition: all var(--duration-fast) var(--ease-ios);
     flex-shrink: 0;
-    background: var(--water-white);
+    background: var(--background-primary);
 }
 
 .checkbox-item input[type="checkbox"]:checked + .checkbox-label .checkbox-custom {
-    background: var(--aqua-blue);
-    border-color: var(--aqua-blue);
+    background: var(--ios-blue);
+    border-color: var(--ios-blue);
     transform: scale(1.1);
 }
 
 .checkbox-item input[type="checkbox"]:checked + .checkbox-label .checkbox-custom::after {
     content: '';
     position: absolute;
-    top: 1px;
-    left: 4px;
-    width: 4px;
-    height: 8px;
-    border: solid var(--water-white);
+    top: 2px;
+    left: 6px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
     opacity: 1;
+    animation: checkmark var(--duration-fast) var(--ease-spring);
+}
+
+@keyframes checkmark {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: rotate(45deg) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(45deg) scale(1);
+    }
 }
 
 .checkbox-item input[type="checkbox"]:disabled + .checkbox-label {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
-    background: var(--glass-clear);
+    background: var(--background-tertiary);
+}
+
+.checkbox-item input[type="checkbox"]:disabled + .checkbox-label .checkbox-custom {
+    border-color: var(--ios-gray-4);
+    background: var(--ios-gray-6);
+}
+
+.checkbox-item input[type="checkbox"]:disabled:checked + .checkbox-label .checkbox-custom {
+    background: var(--ios-gray-4);
+    border-color: var(--ios-gray-4);
 }
 
 .checkbox-text {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 1.3;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.29;
     color: var(--text-primary);
-    letter-spacing: 0.01em;
+    letter-spacing: -0.01em;
 }
 
 /* ==============================================
-   BOTÓN GENERAR COMPACTO
+   BOTÓN GENERAR iOS
    ============================================== */
 
 .generate-button {
     width: 100%;
-    background: var(--aqua-blue);
-    color: var(--water-white);
+    background: var(--ios-blue);
+    color: white;
     border: none;
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
     font-weight: 600;
-    font-size: 14px;
-    line-height: 1.3;
+    font-size: 17px;
+    line-height: 1.29;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-sm);
-    transition: all var(--duration-drop) var(--ease-water);
-    margin-bottom: var(--space-lg);
-    box-shadow: var(--shadow-drop);
-    letter-spacing: 0.01em;
-    min-height: 42px;
-    position: relative;
-    overflow: hidden;
-}
-
-.generate-button::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: var(--radius-drop);
-    transform: translate(-50%, -50%);
-    transition: all var(--duration-splash) var(--ease-splash);
+    gap: var(--spacing-sm);
+    transition: all var(--duration-fast) var(--ease-ios);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    letter-spacing: -0.01em;
+    min-height: 50px; /* Altura mínima táctil iOS */
 }
 
 .generate-button:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: var(--shadow-splash);
-    background: var(--aqua-blue-light);
-}
-
-.generate-button:hover::before {
-    width: 100%;
-    height: 100%;
-    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-blue);
+    background: var(--ios-blue-hover);
 }
 
 .generate-button:active {
     transform: translateY(0) scale(0.98);
     transition-duration: 0.1s;
-    background: var(--aqua-blue-dark);
+    background: var(--ios-blue-active);
 }
 
-.generate-button.generating {
-    animation: generatePulse var(--duration-splash) var(--ease-splash);
-}
-
-@keyframes generatePulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); background: var(--aqua-blue-light); }
-    100% { transform: scale(1); }
+.generate-button:focus {
+    outline: none;
+    box-shadow: 
+        var(--shadow-sm),
+        0 0 0 3px rgba(0, 122, 255, 0.2);
 }
 
 /* ==============================================
-   FOOTER COMPACTO
+   FOOTER iOS
    ============================================== */
 
 .app-footer {
     text-align: center;
-    margin-top: var(--space-lg);
+    margin-top: var(--spacing-lg);
 }
 
 .app-footer p {
-    font-size: 10px;
+    font-size: 13px;
     color: var(--text-tertiary);
     font-weight: 400;
-    line-height: 1.3;
-    letter-spacing: 0.01em;
+    line-height: 1.38;
+    letter-spacing: -0.01em;
 }
 
 /* ==============================================
-   EFECTOS DE FOCO Y ACCESIBILIDAD
+   FOCUS VISIBLE PARA ACCESIBILIDAD iOS
    ============================================== */
 
 *:focus-visible {
-    outline: 2px solid var(--aqua-blue);
+    outline: 2px solid var(--ios-blue);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
 }
@@ -601,94 +789,58 @@ header {
 button:focus-visible,
 input:focus-visible {
     outline: none;
-    box-shadow: 
-        var(--shadow-drop),
-        0 0 0 3px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
 }
 
 /* ==============================================
-   RESPONSIVE DESIGN EXTREMO
+   ANIMACIONES iOS
    ============================================== */
 
-/* iPhone SE y dispositivos ultra pequeños */
-@media (max-width: 320px) {
-    .app-container {
-        max-width: 260px;
-        padding: var(--space-md);
+@keyframes pulse-ios {
+    0% { 
+        transform: scale(1); 
+        opacity: 1;
     }
-    
-    .app-title {
-        font-size: 16px;
+    50% { 
+        transform: scale(1.05); 
+        opacity: 0.8;
     }
-    
-    .password-field {
-        font-size: 11px;
-    }
-    
-    .password-wrapper {
-        flex-direction: column;
-        gap: var(--space-sm);
-    }
-    
-    .copy-button {
-        width: 100%;
+    100% { 
+        transform: scale(1); 
+        opacity: 1;
     }
 }
 
-/* Altura limitada */
-@media (max-height: 600px) {
-    body {
-        padding: var(--space-sm);
-        align-items: flex-start;
-        padding-top: var(--space-md);
+@keyframes spring-in {
+    0% { 
+        transform: scale(0.9); 
+        opacity: 0;
     }
-    
-    .app-container {
-        padding: var(--space-md);
+    50% { 
+        transform: scale(1.05); 
+        opacity: 0.8;
     }
-    
-    header {
-        margin-bottom: var(--space-md);
-    }
-    
-    .settings-section {
-        margin-bottom: var(--space-md);
-    }
-    
-    .setting-group {
-        margin-bottom: var(--space-md);
+    100% { 
+        transform: scale(1); 
+        opacity: 1;
     }
 }
 
-/* Tablets pequeñas */
-@media (min-width: 481px) and (max-width: 768px) {
-    .app-container {
-        max-width: 320px;
-    }
-    
-    .checkbox-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-md);
-    }
+.generate-button.generating {
+    animation: pulse-ios 0.5s var(--ease-spring);
 }
 
-/* Escritorio */
-@media (min-width: 769px) {
-    .app-container {
-        max-width: 300px;
-    }
-    
-    .checkbox-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-md);
-    }
-    
-    .glass-container:hover {
-        transform: translateY(-4px) scale(1.03);
-    }
+/* Microinteracciones iOS */
+.glass-container,
+.checkbox-label,
+.copy-button,
+.generate-button,
+.password-field,
+.length-slider::-webkit-slider-thumb {
+    will-change: transform, box-shadow;
 }
 
-/* Reducir movimiento para accesibilidad */
+/* Reducir movimiento para usuarios que lo prefieren */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -698,9 +850,147 @@ input:focus-visible {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+}
+
+/* ==============================================
+   RESPONSIVE DESIGN iOS
+   ============================================== */
+
+/* iPhone SE y dispositivos pequeños */
+@media (max-width: 375px) {
+    body {
+        padding: var(--spacing-md);
+    }
     
-    body::before,
-    body::after {
-        animation: none !important;
+    .app-container {
+        padding: var(--spacing-lg);
+        max-width: 100%;
+    }
+    
+    .app-title {
+        font-size: 24px;
+    }
+    
+    .password-field {
+        font-size: 16px;
+    }
+    
+    .password-wrapper {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .copy-button {
+        width: 100%;
+    }
+    
+    .checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .copy-feedback {
+        right: 50%;
+        transform: translateX(50%) translateY(8px);
+    }
+    
+    .copy-feedback.show {
+        transform: translateX(50%) translateY(0);
+    }
+}
+
+/* iPhone estándar y Pro */
+@media (min-width: 376px) and (max-width: 428px) {
+    .app-container {
+        max-width: 360px;
+        padding: var(--spacing-xl);
+    }
+    
+    .checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* iPad Mini y tablets pequeñas */
+@media (min-width: 429px) and (max-width: 768px) {
+    .app-container {
+        max-width: 450px;
+        padding: var(--spacing-xxl);
+    }
+    
+    .checkbox-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+}
+
+/* iPad y tablets grandes */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .app-container {
+        max-width: 500px;
+        padding: var(--spacing-xxl);
+    }
+    
+    .checkbox-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .glass-container:hover {
+        transform: translateY(-3px) scale(1.01);
+    }
+}
+
+/* Escritorio y pantallas grandes */
+@media (min-width: 1025px) {
+    .app-container {
+        max-width: 480px;
+    }
+    
+    .glass-container:hover {
+        transform: translateY(-4px) scale(1.02);
+    }
+    
+    .checkbox-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+}
+
+/* Pantallas Ultra Wide */
+@media (min-width: 1440px) {
+    .glass-container {
+        backdrop-filter: blur(20px) saturate(140%);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+    }
+}
+
+/* Altura limitada (landscape en móviles) */
+@media (max-height: 600px) and (orientation: landscape) {
+    body {
+        padding: var(--spacing-sm);
+        align-items: flex-start;
+        padding-top: var(--spacing-lg);
+    }
+    
+    .app-container {
+        padding: var(--spacing-lg);
+    }
+    
+    header {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .settings-section {
+        margin-bottom: var(--spacing-lg);
+    }
+}
+
+/* Soporte para dispositivos con notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+    body {
+        padding-top: max(var(--spacing-lg), env(safe-area-inset-top));
+        padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
+        padding-left: max(var(--spacing-lg), env(safe-area-inset-left));
+        padding-right: max(var(--spacing-lg), env(safe-area-inset-right));
     }
 }

@@ -152,20 +152,24 @@ function handleGeneratePassword() {
             return;
         }
         
-        // Animación del botón
+        // Animación del botón y efecto ripple
         elements.generateButton.classList.add('generating');
+        addRippleEffect(elements.generateButton);
+        
         setTimeout(() => {
             elements.generateButton.classList.remove('generating');
-        }, 600);
+        }, 500);
         
         // Generar nueva contraseña
         const newPassword = generateSecurePassword();
         elements.passwordOutput.value = newPassword;
         
-        // Feedback visual
-        elements.passwordOutput.style.background = 'rgba(46, 125, 50, 0.1)';
+        // Feedback visual acuático
+        elements.passwordOutput.style.background = 'rgba(52, 199, 89, 0.1)';
+        elements.passwordOutput.style.borderColor = '#34C759';
         setTimeout(() => {
-            elements.passwordOutput.style.background = 'rgba(0, 0, 0, 0.1)';
+            elements.passwordOutput.style.background = '';
+            elements.passwordOutput.style.borderColor = '';
         }, 1000);
         
     } catch (error) {
@@ -386,10 +390,16 @@ function setupEventListeners() {
  * Inicializa la aplicación
  */
 function initializeApp() {
-    console.log('🔐 Inicializando GlassPass...');
+    console.log('💧 Inicializando GlassPass Acuático...');
     
     // Configurar event listeners
     setupEventListeners();
+    
+    // Configurar efectos acuáticos
+    setupAquaticEffects();
+    
+    // Crear gotas de agua de fondo
+    setTimeout(createWaterDrops, 1000);
     
     // Generar contraseña inicial
     handleGeneratePassword();
@@ -399,7 +409,7 @@ function initializeApp() {
         console.warn('⚠️  API Clipboard no disponible, usando método fallback');
     }
     
-    console.log('✅ GlassPass iniciado correctamente');
+    console.log('✅ GlassPass Acuático iniciado correctamente');
 }
 
 // ==============================================
@@ -447,11 +457,105 @@ function evaluatePasswordStrength(password) {
     return { strength, score, feedback };
 }
 
+/**
+ * Añade efecto ripple/ondas a un elemento
+ * @param {HTMLElement} element - Elemento al que añadir el efecto
+ */
+function addRippleEffect(element) {
+    const container = document.querySelector('.glass-container');
+    if (container) {
+        container.classList.add('ripple');
+        setTimeout(() => {
+            container.classList.remove('ripple');
+        }, 700);
+    }
+}
+
+/**
+ * Crea gotas de agua animadas en el fondo
+ */
+function createWaterDrops() {
+    const dropCount = 5;
+    
+    for (let i = 0; i < dropCount; i++) {
+        const drop = document.createElement('div');
+        drop.className = 'water-drop';
+        drop.style.left = Math.random() * 100 + '%';
+        drop.style.animationDelay = Math.random() * 3 + 's';
+        drop.style.animationDuration = (3 + Math.random() * 2) + 's';
+        document.body.appendChild(drop);
+        
+        // Remover la gota después de la animación
+        setTimeout(() => {
+            if (drop.parentNode) {
+                document.body.removeChild(drop);
+            }
+        }, 5000);
+    }
+    
+    // Crear nuevas gotas periódicamente
+    setTimeout(createWaterDrops, 2000 + Math.random() * 3000);
+}
+
+/**
+ * Añade efectos de hover acuáticos a elementos interactivos
+ */
+function setupAquaticEffects() {
+    // Efecto splash en botones
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('mousedown', (e) => {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const splash = document.createElement('div');
+            splash.style.cssText = `
+                position: absolute;
+                left: ${x}px;
+                top: ${y}px;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.6);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+                z-index: 100;
+                animation: splash 0.6s ease-out;
+            `;
+            
+            button.style.position = 'relative';
+            button.appendChild(splash);
+            
+            setTimeout(() => {
+                if (splash.parentNode) {
+                    button.removeChild(splash);
+                }
+            }, 600);
+        });
+    });
+}
+
+// CSS para la animación splash
+const splashStyle = document.createElement('style');
+splashStyle.textContent = `
+    @keyframes splash {
+        to {
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(splashStyle);
+
 // Exponer funciones globalmente para debugging (solo en desarrollo)
 if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     window.GlassPass = {
         generatePassword: generateSecurePassword,
         evaluateStrength: evaluatePasswordStrength,
-        settings: passwordSettings
+        settings: passwordSettings,
+        addRipple: addRippleEffect,
+        createDrops: createWaterDrops
     };
 }
